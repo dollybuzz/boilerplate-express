@@ -30,5 +30,4 @@ app.get("/now", function(req, res, next) {
   res.send({ time : req.time });
 });
 
-
 module.exports = app;
