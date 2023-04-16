@@ -14,6 +14,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+//required for parsing POST requests
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -45,8 +46,10 @@ app.route("/name")
   .get(function(req, res) {
     var firstName = req.query.first;
     var lastName = req.query.last;
-    res.json({name: `${firstName} ${lastName}`});
+    res.send({name: `${firstName} ${lastName}`});
   })
-  .post(function(req, res) { });
+  .post(function(req, res) {
+    res.send({name: req.body.first + " " + req.body.last});
+  });
 
 module.exports = app;
