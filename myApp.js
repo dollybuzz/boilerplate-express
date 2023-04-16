@@ -2,9 +2,11 @@ let express = require('express');
 let app = express();
 let absolutePath = __dirname + '/views/index.html';
 let assetPath = __dirname + '/public';
+let bodyParser = require('body-parser');
 
 console.log("Hello World");
 
+//mounted middleware functions
 app.use("/public", express.static(assetPath));
 
 app.use(function(req, res, next) {
@@ -12,6 +14,11 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+
+//routes
 app.get("/", function(req, res) {
   //res.send("Hello Express");
   res.sendFile(absolutePath);
@@ -23,15 +30,23 @@ app.get("/json", function(req, res) {
   } else { res.json({ "message": "Hello json" }); }
 });
 
-app.get("/now", function(req, res, next) {
+app.get("/now", function(req, res) {
   req.time = new Date().toString();
-  next();
 }, (req, res) => {
-  res.send({ time : req.time });
+  res.json({ time : req.time });
 });
 
 app.get("/:word/echo", function(req,res) {
-  res.send({echo: req.params.word});
+  var value = req.params.word;
+  res.send({echo: value});
 });
+
+app.route("/name")
+  .get(function(req, res) {
+    var firstName = req.query.first;
+    var lastName = req.query.last;
+    res.json({name: `${firstName} ${lastName}`});
+  })
+  .post(function(req, res) { });
 
 module.exports = app;
